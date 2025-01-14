@@ -18,14 +18,14 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import com.training.springsecurity.security.jwt.AuthEntryPointJwt;
 import com.training.springsecurity.security.jwt.AuthTokenFilter;
-import com.training.springsecurity.service.UserDetailsServiceImpl;
+import com.training.springsecurity.service.UserServiceImpl;
 import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
 
 
 @Configuration
 public class SecurityConfig {
 	@Autowired
-	private UserDetailsServiceImpl userDetailsService;
+	private UserServiceImpl userDetailsService;
 	public final static String[] PUBLIC_REQUEST_MATCHERS = { "/api/auth/**","/swagger-ui/**","/v3/api-docs/**"};
     
 	
@@ -58,20 +58,20 @@ public class SecurityConfig {
             .authorizeHttpRequests(authorize -> {
                 authorize.requestMatchers(
                         antMatcher("/h2-console/**")).permitAll()
-                    .requestMatchers(PUBLIC_REQUEST_MATCHERS).permitAll()
-                    .requestMatchers("/greet").hasRole("USER")
-                    .requestMatchers("/api/customer/customers").hasAnyRole("USER", "ADMIN") 
-                    .requestMatchers("/api/customer/get/**").hasAnyRole("USER", "ADMIN") 
-                    .requestMatchers("/api/customer/update/**").hasRole("ADMIN")
-                    .requestMatchers("/api/customer/delete/**").hasRole("ADMIN") 
-                    .requestMatchers("/api/customer/new").hasRole("ADMIN") 
-                    .requestMatchers("/admingreet").hasRole("ADMIN");
+                    .requestMatchers(PUBLIC_REQUEST_MATCHERS).permitAll();
+//                    .requestMatchers("/greet").hasRole("USER")
+//                    .requestMatchers("/api/customer/customers").hasAnyRole("USER", "ADMIN") 
+//                    .requestMatchers("/api/customer/get/**").hasAnyRole("USER", "ADMIN") 
+//                    .requestMatchers("/api/customer/update/**").hasRole("ADMIN")
+//                    .requestMatchers("/api/customer/delete/**").hasRole("ADMIN") 
+//                    .requestMatchers("/api/customer/new").hasRole("ADMIN") 
+//                    .requestMatchers("/admingreet").hasRole("ADMIN");
             })
-            .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)) // Allow frames for H2
-            .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .authenticationProvider(authenticationProvider())
-            .addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+            .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)); // Allow frames for H2
+//            .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
+//            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+//            .authenticationProvider(authenticationProvider())
+//            .addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

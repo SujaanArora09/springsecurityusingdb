@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
-import com.training.springsecurity.service.UserDetailsImpl;
+import com.training.springsecurity.service.UserImpl;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -25,14 +25,14 @@ public class JwtUtils {
   @Value("${jwtExpirationMs}")
   private int jwtExpirationMs;
   public String generateJwtToken(Authentication authentication) {
-    UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
-    return Jwts.builder().setSubject((userPrincipal.getUsername()))
+    UserImpl userPrincipal = (UserImpl) authentication.getPrincipal();
+    return Jwts.builder().setSubject((userPrincipal.getEmail()))
     		.setIssuedAt(new Date())
         .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
         .signWith(getSignInKey(),SignatureAlgorithm.HS512)
         .compact(); 
   }
-  public String getUserNameFromJwtToken(String token) {
+  public String getEmailFromJwtToken(String token) {
    //0.9.0// return Jwts.parser().setSigningKey(getSignInKey()).parseClaimsJws(token).getBody().getSubject();
 	//0.11.5  //return Jwts.parserBuilder().setSigningKey(getSignInKey()).build().parseClaimsJws(token).getBody().getSubject();
 	  return Jwts.parserBuilder().setSigningKey(getSignInKey()).build().parseClaimsJws(token).getBody().getSubject();
